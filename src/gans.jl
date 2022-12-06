@@ -5,7 +5,8 @@ using Flux
 using Zygote
 using Base:Fix2
 
-include.(filter(contains(r".jl$"), readdir("../models"; join=true)))
+include("models/gan.jl")
+include("models/dcgan.jl")
 include("training.jl")
 include("output.jl")
 

@@ -94,13 +94,13 @@ train_loader = DataLoader((data=train_x, label=train_y), batchsize=args["batch_s
 # Define the discriminator network.
 # The networks takes a flattened 28x28=784 image as input and outputs the
 # probability of the image belonging to the real dataset.
-discriminator = get_cdcgan_discriminator_v2(args) |> gpu;
+discriminator = get_cdcgan_discriminator(args) |> gpu;
 
 # The generator will generate images which come from the learned
 # distribution. The output layer has a tanh activation function
 # which maps the output to [-1:1], the same range as in the
 # pre-processed MNIST images
-generator = get_cdcgan_generator_v2(args) |> gpu;
+generator = get_cdcgan_generator(args) |> gpu;
 
 # Optimizer for the discriminator
 opt_dscr = getfield(Flux, Symbol(args["optimizer"]))(args["lr_dscr"]);
