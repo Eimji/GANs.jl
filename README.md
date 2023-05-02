@@ -1,32 +1,45 @@
-# Learning the MNIST dataset using GANs with Fluxml
-You want a Generative Adversial Network to learn the MNIST dataset using Julia's
-[FluxML](https://www.fluxml.ai) library? This repository has you covered. It implements numerous GAN architectures
-that learn the MNIST dataset:
+# Implementation of GAN models in Julia
+
+This repository implements the following GAN architectures using [Flux](https://fluxml.ai).
+We use the MNIST dataset to train the models.
+
 * Vanilla [GAN](https://arxiv.org/abs/1406.2661)
 * [Conditional](https://arxiv.org/abs/1411.1784) Deep Convolutional GANs
 
-Each architecture is trained through a separate script. These parse command line options and configure
-various parameters of the model accordingly. This makes it easy to configure training for large
-hyperparamer scans.
+Each GAN model is trained with a separate script to have a control on the model
+hyperparameters. (Hyperparameters must be optimized within the context of each
+machine learning project).
 
-To get started simply clone the repo and run
+## Get Started
 
-```
-$ julia --project=. -i src/runme.jl
-```
-to train a vanilla GAN. To list the parameters run this command
+Clone the repo and go to the gans directory. Then enter the Julia Pkg REPL to
+activate the GANs package:
 
+```shell
+(v1.8) pkg> activate .
 ```
-$ julia --project=. src/runme.jl --help
+
+Then install the GANs package dependencies:
+
+```shell
+(GANs) pkg>instantiate
+```
+
+You can now run a script to train a GAN:
+
+```shell
+# Vanilla GAN
+julia --project=. -i src/scripts/run_gan.jl
+```
+
+To list the parameters run this command
+
+```shell
+julia --project=. src/scripts/run_gan.jl --help
 ```
 
 To train a CDCGAN run
+
+```shell
+julia --project=. -i src/scripts/run_cdcgan.jl
 ```
-$ julia --project=. -i src/runme_cdcgan.jl
-```
-Generated digits in the first 10 epochs look like this:
-
-
-![Generated digits in the first 10 epochs](images/cdcgan_mnist.gif)
-
-

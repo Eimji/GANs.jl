@@ -14,7 +14,7 @@ function get_cdcgan_discriminator(args)
     return Chain(Conv((3, 3), 11 => 32, act),
                  Conv((5, 5), 32 => 64, act),
                  MaxPool((2, 2)),
-                 x -> flatten(x),
+                 x -> Flux.flatten(x),
                  Dense(11 * 11 * 64, 256, relu),
                  Dropout(0.3),
                  Dense(256, 1, sigmoid)) |> gpu;

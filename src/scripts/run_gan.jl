@@ -133,7 +133,7 @@ with_logger(tb_logger) do
             this_batch = size(x)[end]
             # Train the discriminator
             # - Flatten the images, which squashes all dimensions and keeps the last dimension, which is the batch dimension
-            real_data = flatten(x);
+            real_data = Flux.flatten(x);
 
             # Sample minibatch of m noise examples z¹, …, zᵐ from noise prior pg(z)
             noise = randn(args["latent_dim"], this_batch) |> gpu
