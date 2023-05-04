@@ -77,8 +77,8 @@ end
 n_features = 28 * 28
 
 # Load MNIST train and test data
-train_x, train_y = MNIST.traindata(Float32);
-test_x, test_y = MNIST.testdata(Float32);
+train_x, train_y = MNIST(Float32, :train)[:]
+test_x, test_y = MNIST(Float32, :test)[:]
 
 # This dataset has pixel values ∈ [0:1]. Map these to [-1:1]
 # See GAN hacks: https://github.com/soumith/ganhacks
