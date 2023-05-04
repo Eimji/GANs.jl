@@ -3,7 +3,7 @@ module GANs
 using NNlib
 using Flux
 using Zygote
-using Base:Fix2
+using Base: Fix2
 
 include("models/gan.jl")
 include("models/dcgan.jl")

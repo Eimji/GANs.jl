@@ -21,16 +21,16 @@ function get_vanilla_discriminator(args)
         # Now continue: We want to use Base.Fix2
         act = Fix2(getfield(NNlib, Symbol(args["activation"])), Float32(args["activation_alpha"]))
     else
-        act = getfield(NNlib, Symbol(args["activation"]));
+        act = getfield(NNlib, Symbol(args["activation"]))
     end
 
     return Chain(Dense(28 * 28, 1024, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(1024, 512, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(512, 256, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(256, 1, sigmoid)) |> gpu
+        Dropout(args["prob_dropout"]),
+        Dense(1024, 512, act),
+        Dropout(args["prob_dropout"]),
+        Dense(512, 256, act),
+        Dropout(args["prob_dropout"]),
+        Dense(256, 1, sigmoid)) |> gpu
 end
 
 
@@ -39,16 +39,16 @@ function get_vanilla_critic(args)
     if args["activation"] in ["celu", "elu", "leakyrelu", "trelu"]
         act = Fix2(getfield(NNlib, Symbol(args["activation"])), Float32(args["activation_alpha"]))
     else
-        act = getfield(NNlib, Symbol(args["activation"]));
+        act = getfield(NNlib, Symbol(args["activation"]))
     end
 
     return Chain(Dense(28 * 28, 1024, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(1024, 512, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(512, 256, act),
-                 Dropout(args["prob_dropout"]),
-                 Dense(256, 1)) |> gpu
+        Dropout(args["prob_dropout"]),
+        Dense(1024, 512, act),
+        Dropout(args["prob_dropout"]),
+        Dense(512, 256, act),
+        Dropout(args["prob_dropout"]),
+        Dense(256, 1)) |> gpu
 end
 
 
@@ -57,11 +57,11 @@ function get_vanilla_generator(args)
     if args["activation"] in ["celu", "elu", "leakyrelu", "trelu"]
         act = Fix2(getfield(NNlib, Symbol(args["activation"])), Float32(args["activation_alpha"]))
     else
-        act = getfield(NNlib, Symbol(args["activation"]));
+        act = getfield(NNlib, Symbol(args["activation"]))
     end
 
     return Chain(Dense(args["latent_dim"], 256, act),
-                 Dense(256, 512, act),
-                 Dense(512, 1024, act),
-                 Dense(1024, 28*28, tanh)) |> gpu
+        Dense(256, 512, act),
+        Dense(512, 1024, act),
+        Dense(1024, 28 * 28, tanh)) |> gpu
 end

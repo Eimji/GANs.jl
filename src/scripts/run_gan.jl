@@ -23,49 +23,49 @@ Generative Adversarial Networks by I. Goodfellow et al. 2014 https://arxiv.org/a
 s = ArgParseSettings()
 @add_arg_table s begin
     "--lr_dscr"
-        help = "Learning rate for the discriminator. Default = 0.0002"
-        arg_type = Float64
-        default = 0.0002
+    help = "Learning rate for the discriminator. Default = 0.0002"
+    arg_type = Float64
+    default = 0.0002
     "--lr_gen"
-        help = "Learning rate for the generator. Default = 0.0002"
-        arg_type = Float64
-        default = 0.0002
+    help = "Learning rate for the generator. Default = 0.0002"
+    arg_type = Float64
+    default = 0.0002
     "--batch_size"
-        help = "Batch size. Default = 1024"
-        arg_type = Int
-        default = 128
+    help = "Batch size. Default = 1024"
+    arg_type = Int
+    default = 128
     "--num_iterations"
-        help = "Number of training iterations. Not epochs. Default = 1000"
-        arg_type = Int
-        default = 100
+    help = "Number of training iterations. Not epochs. Default = 1000"
+    arg_type = Int
+    default = 100
     "--latent_dim"
-        help = "Size of the latent dimension. Default = 100"
-        arg_type = Int
-        default = 100
+    help = "Size of the latent dimension. Default = 100"
+    arg_type = Int
+    default = 100
     "--optimizer"
-        help = "Optimizer for both, generator and discriminator. Defaults to ADAM"
-        arg_type = String
-        default = "ADAM"
+    help = "Optimizer for both, generator and discriminator. Defaults to ADAM"
+    arg_type = String
+    default = "ADAM"
     "--activation"
-        help = "Activation function. Defaults to leakyrelu with 0.2"
-        arg_type = String
-        default = "relu"
-   "--activation_alpha"
-        help = "Optional parameter for activation function, α in leakyrelu, celu, elu, etc."
-        arg_type = Float64
-        default = 0.1
-   "--train_k"
-        help = "Number of steps that the discriminator is trained while holding the generator fixed."
-        arg_type = Int
-        default = 4
-   "--prob_dropout"
-        help = "Probability for Dropout"
-        arg_type = Float64
-        default = 0.3
-   "--output_period"
-        help = "Period between graphical output of the generator, in units of training iterations."
-        arg_type = Int
-        default = 100
+    help = "Activation function. Defaults to leakyrelu with 0.2"
+    arg_type = String
+    default = "relu"
+    "--activation_alpha"
+    help = "Optional parameter for activation function, α in leakyrelu, celu, elu, etc."
+    arg_type = Float64
+    default = 0.1
+    "--train_k"
+    help = "Number of steps that the discriminator is trained while holding the generator fixed."
+    arg_type = Int
+    default = 4
+    "--prob_dropout"
+    help = "Probability for Dropout"
+    arg_type = Float64
+    default = 0.3
+    "--output_period"
+    help = "Period between graphical output of the generator, in units of training iterations."
+    arg_type = Int
+    default = 100
 end
 
 args = parse_args(s)
@@ -81,7 +81,7 @@ with_logger(tb_logger) do
     @info "hyperparameters" args
 end
 # Number of features per MNIST sample
-n_features = 28*28
+n_features = 28 * 28
 
 # Load MNIST train and test data
 train_x, train_y = MNIST.traindata(Float32);
@@ -89,14 +89,14 @@ test_x, test_y = MNIST.testdata(Float32);
 
 # This dataset has pixel values ∈ [0:1]. Map these to [-1:1]
 # See GAN hacks: https://github.com/soumith/ganhacks
-train_x = 2f0 * reshape(train_x, 28, 28, 1, :) .- 1f0 |>gpu;
-test_x = 2f0 * reshape(test_x, 28, 28, 1, :) .- 1f0 |> gpu;
+train_x = 2.0f0 * reshape(train_x, 28, 28, 1, :) .- 1.0f0 |> gpu
+test_x = 2.0f0 * reshape(test_x, 28, 28, 1, :) .- 1.0f0 |> gpu
 
-train_y = Flux.onehotbatch(train_y, 0:9) |> gpu;
-test_y = Flux.onehotbatch(test_y, 0:9) |> gpu;
+train_y = Flux.onehotbatch(train_y, 0:9) |> gpu
+test_y = Flux.onehotbatch(test_y, 0:9) |> gpu
 
 # Insert the train images and labels into a DataLoader
-train_loader = DataLoader((data=train_x, label=train_y), batchsize=args["batch_size"], shuffle=true);
+train_loader = DataLoader((data=train_x, label=train_y), batchsize=args["batch_size"], shuffle=true)
 
 # Define the discriminator network.
 # The networks takes a flattened 28x28=784 image as input and outputs the
@@ -117,8 +117,8 @@ ps_dscr = Flux.params(discriminator)
 ps_gen = Flux.params(generator)
 
 println("Entering training loop")
-lossvec_gen = zeros(args["num_iterations"]);
-lossvec_dscr = zeros(args["num_iterations"]);
+lossvec_gen = zeros(args["num_iterations"])
+lossvec_dscr = zeros(args["num_iterations"])
 
 # This loop follows the algorithm described in Goodfellow et al. 2014
 # for number of training iterations
@@ -133,7 +133,7 @@ with_logger(tb_logger) do
             this_batch = size(x)[end]
             # Train the discriminator
             # - Flatten the images, which squashes all dimensions and keeps the last dimension, which is the batch dimension
-            real_data = Flux.flatten(x);
+            real_data = Flux.flatten(x)
 
             # Sample minibatch of m noise examples z¹, …, zᵐ from noise prior pg(z)
             noise = randn(args["latent_dim"], this_batch) |> gpu
@@ -150,20 +150,20 @@ with_logger(tb_logger) do
         # ∇_theta_g 1/m Σ_{i=1}^{m} log(1 - D(G(zⁱ))
         loss_gen = train_gen!(discriminator, generator, args["latent_dim"], ps_gen, opt_gen, args["batch_size"])
         loss_sum_gen += loss_gen
-        
+
 
         # Add the per-sample loss of the generator and discriminator
         lossvec_gen[n] = loss_sum_gen / size(train_x)[end]
         lossvec_dscr[n] = loss_sum_dscr / size(train_x)[end]
 
         if n % args["output_period"] == 0
-            noise = randn(args["latent_dim"], 4) |> gpu;
-            fake_img = reshape(generator(noise), 28, 4*28) |> cpu;
-            fake_img[fake_img .> 1.0] .= 1.0
-            fake_img[fake_img .< -1.0] .= -1.0
+            noise = randn(args["latent_dim"], 4) |> gpu
+            fake_img = reshape(generator(noise), 28, 4 * 28) |> cpu
+            fake_img[fake_img.>1.0] .= 1.0
+            fake_img[fake_img.<-1.0] .= -1.0
             fake_img = (fake_img .+ 1.0) .* 0.5
             log_image(tb_logger, "generatedimage", fake_img, ImageFormat(202))
         end
-        @info "test" loss_generator=lossvec_gen[n] loss_discriminator=lossvec_dscr[n]
+        @info "test" loss_generator = lossvec_gen[n] loss_discriminator = lossvec_dscr[n]
     end # Training loop
 end # Logger
