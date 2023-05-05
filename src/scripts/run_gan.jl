@@ -37,7 +37,7 @@ s = ArgParseSettings()
     "--num_iterations"
     help = "Number of training iterations. Not epochs. Default = 1000"
     arg_type = Int
-    default = 100
+    default = 1000
     "--latent_dim"
     help = "Size of the latent dimension. Default = 100"
     arg_type = Int
@@ -124,6 +124,7 @@ lossvec_dscr = zeros(args["num_iterations"])
 # for number of training iterations
 with_logger(tb_logger) do
     for n in 1:args["num_iterations"]
+        println("Training $n...")
         loss_sum_gen = 0.0f0
         loss_sum_dscr = 0.0f0
 
